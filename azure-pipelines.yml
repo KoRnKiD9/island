@@ -18,3 +18,48 @@ steps:
     publishJUnitResults: false
     testResultsFiles: '**/TEST-*.xml'
     tasks: 'assembleDebug'
+
+ 1. Make this file  
+
+$ nano ~/.bashrc
+
+2.  Copy code or press on termux .bashrc file
+
+_______Code start__________
+
+auto_install() {
+    local cmd="$1"
+    shift
+    local output
+    output=$(eval "$cmd" "$@" 2>&1)
+
+    if echo "$output" | grep -iq "not installed\|install it"; then
+        package_name=$(echo "$output" | grep -oP "(?<=install ).*" | awk '{print $1}')
+        
+        if [ -n "$package_name" ]; then
+            echo "[+] Package '$package_name' is missing! Installing..."
+            pkg install -y "$package_name"
+            echo "[✓] Installation complete! Re-running your command..."
+            eval "$cmd" "$@"
+        else
+            echo "[!] Unable to detect package name. Install manually."
+        fi
+    else
+        echo "$output"
+    fi
+}
+
+trap 'auto_install "$BASH_COMMAND"' ERR
+
+_______Code end ______
+
+3. Load this .bashrc script 
+
+$ source ~/.bashrc
+
+
+4. Long press on terminal so show option click more options  ..
+
+Click kill process 
+
+All done ✅
